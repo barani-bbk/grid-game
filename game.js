@@ -65,6 +65,7 @@ export default class Game {
         this.grid[x][y] = "_";
       }
 
+      const eliminatedPlayers = new Map();
       for (const [key, names] of collisionMap.entries()) {
         if (names.length === 1) {
           const name = names[0];
@@ -80,16 +81,20 @@ export default class Game {
             return;
           }
         } else {
+          eliminatedPlayers.set(key, names);
           for (const name of names) {
-            console.log(
-              `Player ${name} eliminated due to collision at position ${key}\n`
-            );
             this.players.delete(name);
           }
         }
       }
 
       this.print();
+
+      for (const [key, names] of eliminatedPlayers) {
+        console.log(
+          `Players ${names.join(", ")} eliminated at position ${key}\n`
+        );
+      }
 
       if (this.players.size === 0) {
         console.log(`Game ${this.id.toString().padStart(2, "0")} ended`);
